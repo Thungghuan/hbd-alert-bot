@@ -4,7 +4,7 @@
   "description": "A telegram bot that alert you whose birthday is coming",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "tsc --noEmitOnError && node index.js"
   },
   "repository": {
     "type": "git",
