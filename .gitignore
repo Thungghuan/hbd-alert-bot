@@ -105,3 +105,6 @@ dist
 
 # JavaScript file
 index.js
+
+# SQlite3 database file
+*.db
