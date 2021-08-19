@@ -2,7 +2,7 @@ import { Telegraf, Scenes, session } from 'telegraf'
 import express from 'express'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 import { DB } from './database'
-import { addDataWizard } from './addDataWizard'
+import { addDataWizard } from './wizards/addDataWizard'
 
 const app = express()
 
