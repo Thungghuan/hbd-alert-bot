@@ -15,6 +15,8 @@ const token = process.env.BOT_TOKEN!
 
 const bot = new Telegraf(token)
 
+const dbName = 'data.db'
+
 bot.start((ctx) => {
   let replyMSG =
     "Hello, I'm HBD-alert-bot \n" +
@@ -28,8 +30,11 @@ bot.start((ctx) => {
     replyMSG += 'Hello everyone.'
   }
 
-  const dbName = `Chat-${ctx.chat.id}`
   const db = new DB(dbName)
+  const tableName = `Chat-${ctx.chat.id}`
+
+  db.createDateTable(tableName)
+
   db.close()
 
   ctx.reply(replyMSG)
