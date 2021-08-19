@@ -1,4 +1,4 @@
-import { Scenes, Telegraf } from 'telegraf'
+import { Telegraf, Scenes } from 'telegraf'
 import express from 'express'
 import { DB } from './database'
 import { addDataWizard } from './addDataWizard'
@@ -14,7 +14,13 @@ app.listen(port)
 
 const token = process.env.BOT_TOKEN!
 
-const bot = new Telegraf(token)
+const bot = new Telegraf<Scenes.WizardContext>(token)
+
+const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard], {
+  default: 'add_data_wizard'
+})
+
+bot.use(stage.middleware())
 
 const dbName = 'data.db'
 
@@ -45,7 +51,7 @@ bot.start((ctx) => {
 bot.help((ctx) => {})
 
 bot.hears('add_data', (ctx) => {
-  ;(ctx as any).scene.enter('add_data_wizard')
+  ctx.scene.enter('add_data_wizard')
 })
 
 bot.command('hello', (ctx) => {
