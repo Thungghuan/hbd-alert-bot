@@ -1,24 +1,46 @@
 import sqlite3 from 'sqlite3'
 const sqlite = sqlite3.verbose()
 
+interface DBHandlers {
+  successHandler: (...args: any) => any
+  errorHandler: (err: string) => any
+}
+
+const handlers: DBHandlers = {
+  successHandler: (res) => console.log(res),
+  errorHandler: (err) => console.error(err)
+}
+
 interface BirthdayData {
   id?: number
   name: string
   date: string
-  weekday: string
+}
+
+export const setSuccessHandlers = (handler: (res: any) => any) => {
+  handlers.successHandler = handler
+}
+
+export const setErrorHandlers = (handler: (err: string) => any) => {
+  handlers.errorHandler = handler
 }
 
 export class DB {
   db
   dbName
+  successHandler
+  errorHandler
 
   constructor(dbName: string) {
     this.dbName = dbName
+    this.successHandler = handlers.successHandler
+    this.errorHandler = handlers.errorHandler
+
     this.db = new sqlite.Database(dbName, (err) => {
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       }
-      console.log('Connected to the SQLite database named', dbName)
+      this.successHandler(`Connected to the SQLite database named ${dbName}`)
     })
   }
 
@@ -26,33 +48,32 @@ export class DB {
     const sql = `CREATE TABLE IF NOT EXISTS ${tableName} (
       ID INTEGER PRIMARY KEY,
       Name TEXT,
-      Date TEXT,
-      Weekday TEXT
+      Date TEXT
     )`
     this.db.run(sql, (res: sqlite3.RunResult, err: Error | null) => {
       if (res) {
-        console.log(res)
+        this.successHandler(res)
       } else {
-        console.log(`Table ${tableName} created.`)
+        this.successHandler(`Table ${tableName} created.`)
       }
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       }
     })
   }
 
   insertDateItem(tableName: string, item: BirthdayData) {
-    const sql = `INSERT INTO ${tableName} (Name, Date, Weekday)
-      VALUES ("${item.name}", "${item.date}", "${item.weekday}")`
+    const sql = `INSERT INTO ${tableName} (Name, Date)
+      VALUES ("${item.name}", "${item.date}")`
 
     this.db.run(sql, (res: sqlite3.RunResult, err: Error | null) => {
       if (res) {
-        console.log(res)
+        this.successHandler(res)
       } else {
-        console.log(`Birthday data of ${item.name} was inserted.`)
+        this.successHandler(`Birthday data of ${item.name} was inserted.`)
       }
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       }
     })
   }
@@ -60,7 +81,7 @@ export class DB {
   insertItemIfNotExist(tableName: string, item: BirthdayData) {
     this.isItemExist(tableName, item, (isExist, item) => {
       if (isExist) {
-        console.error(`INSERT ERROR: Birthday data of ${item.name} exists.`)
+        this.errorHandler(`INSERT ERROR: Birthday data of ${item.name} exists.`)
       } else {
         this.insertDateItem(tableName, item)
       }
@@ -73,7 +94,7 @@ export class DB {
 
     this.db.all(sql, (err, rows: BirthdayData[]) => {
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       }
       rows?.forEach((row) => {
         if (row.id === id) {
@@ -94,7 +115,7 @@ export class DB {
 
     this.db.all(sql, (err, rows: BirthdayData[]) => {
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       }
       rows?.forEach((row) => {
         if (row.name === item.name) {
@@ -107,19 +128,19 @@ export class DB {
 
   getDataByID(tableName: string, id: number, cb: (data: BirthdayData) => any) {
     if (id <= 0) {
-      console.error(`ID ${id} is invalid`)
+      this.errorHandler(`ID ${id} is invalid`)
     } else {
       this.isIDExist(tableName, id, (isExist) => {
         if (!isExist) {
-          console.error(`ID ${id} is invalid`)
+          this.errorHandler(`ID ${id} is invalid`)
         } else {
-          const sql = `SELECT ID as id, Name as name, Date as date, Weekday as weekday FROM ${tableName} WHERE ID=${id}`
+          const sql = `SELECT ID as id, Name as name, Date as date FROM ${tableName} WHERE ID=${id}`
 
           this.db.get(sql, (err, row) => {
             if (err) {
-              console.error(err)
+              this.errorHandler(err.message)
             } else {
-              console.log(row)
+              cb(row)
             }
           })
         }
@@ -128,39 +149,35 @@ export class DB {
   }
 
   getAllBirthdayData(tableName: string, cb: (data: BirthdayData[]) => any) {
-    const sql = `SELECT ID as id, Name as name, Date as date, Weekday as weekday FROM ${tableName}`
+    const sql = `SELECT ID as id, Name as name, Date as date FROM ${tableName}`
 
     this.db.all(sql, (err: Error | null, rows: BirthdayData[]) => {
       if (err) {
-        console.error(err.message)
+        this.errorHandler(err.message)
       } else {
         cb(rows)
       }
     })
   }
 
-  updateItem(
-    tableName: string,
-    id: number,
-    item: Pick<BirthdayData, 'date' | 'weekday'>
-  ) {
+  updateItem(tableName: string, id: number, item: Pick<BirthdayData, 'date'>) {
     if (id <= 0) {
-      console.error(`ID ${id} is invalid`)
+      this.errorHandler(`ID ${id} is invalid`)
     } else {
       this.isIDExist(tableName, id, (isExist) => {
         if (!isExist) {
-          console.error(`ID ${id} is invalid`)
+          this.errorHandler(`ID ${id} is invalid`)
         } else {
           const sql = `UPDATE ${tableName}
-          SET Date="${item.date}", Weekday="${item.weekday}"
-          WHERE ID=${id}
+            SET Date="${item.date}"
+            WHERE ID=${id}
           `
 
           this.db.run(sql, (err) => {
             if (err) {
-              console.error(err.message)
+              this.errorHandler(err.message)
             } else {
-              console.log(`Birthday data with id ${id} updated.`)
+              this.successHandler(`Birthday data with id ${id} updated.`)
             }
           })
         }
@@ -170,19 +187,19 @@ export class DB {
 
   deleteItem(tableName: string, id: number) {
     if (id <= 0) {
-      console.error(`ID ${id} is invalid`)
+      this.errorHandler(`ID ${id} is invalid`)
     } else {
       this.isIDExist(tableName, id, (isExist) => {
         if (!isExist) {
-          console.error(`ID ${id} is invalid`)
+          this.errorHandler(`ID ${id} is invalid`)
         } else {
           const sql = `DELETE FROM ${tableName} WHERE ID=${id}`
 
           this.db.run(sql, (err) => {
             if (err) {
-              console.error(err.message)
+              this.errorHandler(err.message)
             } else {
-              console.log(`Data with ID ${id} removed`)
+              this.successHandler(`Data with ID ${id} removed`)
             }
           })
         }
@@ -195,7 +212,7 @@ export class DB {
 
     this.db.run(sql, (err) => {
       if (err) {
-        console.error(err)
+        this.errorHandler(err.message)
       }
     })
   }
@@ -203,9 +220,9 @@ export class DB {
   close() {
     this.db.close((err) => {
       if (err) {
-        return console.error(err.message)
+        this.errorHandler(err.message)
       } else {
-        console.log('Close connection to SQLite database named', this.dbName)
+        this.successHandler('Close connection to SQLite database named', this.dbName)
       }
     })
   }
