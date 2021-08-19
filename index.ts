@@ -31,7 +31,7 @@ bot.start((ctx) => {
   }
 
   const db = new DB(dbName)
-  const tableName = `Chat-${ctx.chat.id}`
+  const tableName = `Chat_${ctx.chat.id}`
 
   db.createDateTable(tableName)
 

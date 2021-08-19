@@ -76,6 +76,12 @@ export class DB {
     })
   }
 
+  insertItemsIfNotExist(tableName: string, items: BirthdayData[]) {
+    items.forEach((item) => {
+      this.insertItemIfNotExist(tableName, item)
+    })
+  }
+
   isIDExist(tableName: string, id: number, cb: (isExist: Boolean) => any) {
     const sql = `SELECT ID as id FROM ${tableName}`
     let isExist = false

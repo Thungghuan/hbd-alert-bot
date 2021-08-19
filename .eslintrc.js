@@ -12,5 +12,6 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     'space-before-function-paren': 'off'
-  }
+  },
+  ignorePatterns: ['*.test.ts']
 }
