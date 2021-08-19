@@ -15,8 +15,8 @@ interface BirthdayData {
 export class DB {
   db
   dbName
-  successHandler
-  errorHandler
+  successHandler: (...args: any) => any
+  errorHandler: (err: string) => any
 
   constructor(dbName: string, handlers?: DBHandlers) {
     this.dbName = dbName
