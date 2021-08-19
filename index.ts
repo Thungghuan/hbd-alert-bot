@@ -1,5 +1,6 @@
 import { Telegraf } from 'telegraf'
 import express from 'express'
+import { DB } from './database'
 
 const app = express()
 
@@ -26,6 +27,10 @@ bot.start((ctx) => {
   } else {
     replyMSG += 'Hello everyone.'
   }
+
+  const dbName = `Chat-${ctx.chat.id}`
+  const db = new DB(dbName)
+  db.close()
 
   ctx.reply(replyMSG)
 })

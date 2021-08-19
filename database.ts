@@ -2,13 +2,8 @@ import sqlite3 from 'sqlite3'
 const sqlite = sqlite3.verbose()
 
 interface DBHandlers {
-  successHandler: (...args: any) => any
-  errorHandler: (err: string) => any
-}
-
-const handlers: DBHandlers = {
-  successHandler: (res) => console.log(res),
-  errorHandler: (err) => console.error(err)
+  successHandler?: (...args: any) => any
+  errorHandler?: (err: string) => any
 }
 
 interface BirthdayData {
@@ -17,24 +12,17 @@ interface BirthdayData {
   date: string
 }
 
-export const setSuccessHandlers = (handler: (res: any) => any) => {
-  handlers.successHandler = handler
-}
-
-export const setErrorHandlers = (handler: (err: string) => any) => {
-  handlers.errorHandler = handler
-}
-
 export class DB {
   db
   dbName
   successHandler
   errorHandler
 
-  constructor(dbName: string) {
+  constructor(dbName: string, handlers?: DBHandlers) {
     this.dbName = dbName
-    this.successHandler = handlers.successHandler
-    this.errorHandler = handlers.errorHandler
+    this.successHandler =
+      handlers?.successHandler || ((res) => console.log(res))
+    this.errorHandler = handlers?.errorHandler || ((err) => console.error(err))
 
     this.db = new sqlite.Database(dbName, (err) => {
       if (err) {
@@ -222,7 +210,10 @@ export class DB {
       if (err) {
         this.errorHandler(err.message)
       } else {
-        this.successHandler('Close connection to SQLite database named', this.dbName)
+        this.successHandler(
+          'Close connection to SQLite database named',
+          this.dbName
+        )
       }
     })
   }
