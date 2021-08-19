@@ -1,13 +1,8 @@
-import { Telegraf, Scenes } from 'telegraf'
+import { Telegraf, Scenes, session } from 'telegraf'
 import express from 'express'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 import { DB } from './database'
 import { addDataWizard } from './addDataWizard'
-
-const agent = new SocksProxyAgent({
-  host: '127.0.0.1',
-  port: '1086'
-})
 
 const app = express()
 
@@ -26,16 +21,17 @@ const botOptions: Partial<
 
 if (process.env.BOT_ENV === 'development') {
   botOptions.telegram = {
-    agent
+    agent: new SocksProxyAgent({
+      host: '127.0.0.1',
+      port: '1086'
+    })
   }
 }
 
 const bot = new Telegraf<Scenes.WizardContext>(token, botOptions)
+const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard])
 
-const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard], {
-  default: 'add_data_wizard'
-})
-
+bot.use(session())
 bot.use(stage.middleware())
 
 const dbName = 'data.db'
