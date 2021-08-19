@@ -211,8 +211,7 @@ export class DB {
         this.errorHandler(err.message)
       } else {
         this.successHandler(
-          'Close connection to SQLite database named',
-          this.dbName
+          `Close connection to SQLite database named ${this.dbName}`
         )
       }
     })
