@@ -9,8 +9,9 @@ export const addDataWizard = new Scenes.WizardScene(
   'add_data_wizard',
   async (ctx: any) => {
     const replyMSG =
-      '🥳 Send the birthday day please.\n' +
-      '📝 Format: NAME MM-DD, separated by a space or a newline\n'
+      '🥳 Send the birthday day list please.\n' +
+      '📝 Format: NAME MM-DD,\n' +
+      '     separated by a space or a newline\n'
     await ctx.reply(replyMSG)
     return ctx.wizard.next()
   },
