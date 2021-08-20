@@ -100,9 +100,25 @@ bot.command('add_data', (ctx) => {
   ctx.scene.enter('add_data')
 })
 
-bot.command('hello', (ctx) => {
-  const name = ctx.message.from.first_name + ctx.message.from?.last_name
-  ctx.reply(`Hello, ${name}`)
+bot.command('show_data', (ctx) => {
+  const db = new DB(dbName)
+  const tableName = `Chat_${ctx.chat.id}`
+
+  db.getAllBirthdayData(tableName, (rows) => {
+    if (rows.length === 0) {
+      ctx.reply('No birthday date now\nUse command /add_data to add some.')
+    } else {
+      let replyMSG = 'ID Name Date\n'
+
+      rows.forEach((row) => {
+        replyMSG += `${row.id} ${row.name} ${row.date}\n`
+      })
+
+      ctx.reply(replyMSG)
+    }
+  })
+
+  db.close()
 })
 
 bot.launch()

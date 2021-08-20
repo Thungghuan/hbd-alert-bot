@@ -1,4 +1,5 @@
 import { Scenes } from 'telegraf'
+import { DB } from '../database'
 
 interface BirthdayData {
   name: string
@@ -29,13 +30,13 @@ export const addDataWizard = new Scenes.WizardScene(
       birthdayData.push(data)
     })
 
-    let replyMSG = ''
+    const db = new DB('data.db')
+    const tableName = `Chat_${ctx.chat.id}`
 
-    birthdayData.forEach((el) => {
-      replyMSG += `${el.name} ${el.date}\n`
-    })
+    db.insertItemsIfNotExist(tableName, birthdayData)
 
-    await ctx.reply(replyMSG)
+    await ctx.reply('All items were inserted.')
+    db.close()
     return ctx.scene.leave()
   }
 )
