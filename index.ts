@@ -1,17 +1,8 @@
 import { Telegraf, Scenes, session } from 'telegraf'
-import express from 'express'
-import { SocksProxyAgent } from 'socks-proxy-agent'
 import { DB } from './database'
-import { addDataWizard } from './wizards/addDataWizard'
-
-const app = express()
-
-const port = process.env.PORT || 9000
-
-app.get('/', (req, res) => {
-  res.send('HBD-alert-bot is here.')
-})
-app.listen(port)
+import { agent } from './utils/socksProxy'
+import { serverStart } from './utils/server'
+import { addDataWizard } from './scenes/addDataWizard'
 
 const token = process.env.BOT_TOKEN!
 
@@ -21,16 +12,15 @@ const botOptions: Partial<
 
 if (process.env.BOT_ENV === 'development') {
   botOptions.telegram = {
-    agent: new SocksProxyAgent({
-      host: '127.0.0.1',
-      port: '1086'
-    })
+    agent
   }
+} else if (process.env.BOT_ENV === 'heroku') {
+  serverStart()
 }
 
 const bot = new Telegraf<Scenes.WizardContext>(token, botOptions)
-const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard])
 
+const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard])
 bot.use(session())
 bot.use(stage.middleware())
 
@@ -54,6 +44,7 @@ bot.start((ctx) => {
   const tableName = `Chat_${ctx.chat.id}`
 
   db.createDateTable(tableName)
+  db.createChatTable(tableName, '' + ctx.chat.id)
 
   db.close()
 

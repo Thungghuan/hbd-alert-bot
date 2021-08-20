@@ -12,6 +12,12 @@ interface BirthdayData {
   date: string
 }
 
+interface ChatIDData {
+  id?: number
+  chatID: string
+  enabled: number
+}
+
 export class DB {
   db
   dbName
@@ -199,6 +205,109 @@ export class DB {
         }
       })
     }
+  }
+
+  createChatTable(tableName: string, chatID: string) {
+    const sql = `CREATE TABLE IF NOT EXISTS ChatID (
+      ID INTEGER PRIMARY KEY,
+      ChatID TEXT,
+      Enabled INTEGER
+    )`
+    this.db.run(sql, (res: sqlite3.RunResult, err: Error | null) => {
+      if (res) {
+        this.successHandler(res)
+      } else {
+        this.successHandler('Table ChatID created.')
+        this.insertChatID(chatID)
+      }
+      if (err) {
+        this.errorHandler(err.message)
+      }
+    })
+  }
+
+  insertChatID(chatID: string) {
+    const sql = `INSERT OR IGNORE INTO ChatID (ChatID, Enabled)
+      VALUES ("${chatID}", 1)`
+
+    this.db.run(sql, (res: sqlite3.RunResult, err: Error | null) => {
+      if (res) {
+        this.successHandler(res)
+      } else {
+        this.successHandler(`Chat ${chatID} was inserted.`)
+      }
+      if (err) {
+        this.errorHandler(err.message)
+      }
+    })
+  }
+
+  isChatIDExist(id: number, cb: (isExist: Boolean) => any) {
+    const sql = 'SELECT ID as id FROM ChatID'
+    let isExist = false
+
+    this.db.all(sql, (err, rows: BirthdayData[]) => {
+      if (err) {
+        this.errorHandler(err.message)
+      }
+      rows?.forEach((row) => {
+        if (row.id === id) {
+          isExist = true
+        }
+      })
+      cb(isExist)
+    })
+  }
+
+  toggleChanIDAlert(id: number) {
+    if (id <= 0) {
+      this.errorHandler(`ID ${id} is invalid`)
+    } else {
+      this.isChatIDExist(id, (isExist) => {
+        if (!isExist) {
+          this.errorHandler(`ID ${id} is invalid`)
+        } else {
+          const sql = `UPDATE ChatID
+            SET Enabled = ((Enabled | 1) - (Enabled & 1))
+            WHERE ID=${id}
+          `
+
+          this.db.run(sql, (err) => {
+            if (err) {
+              this.errorHandler(err.message)
+            } else {
+              this.successHandler('Chat alert toggled')
+            }
+          })
+        }
+      })
+    }
+  }
+
+  getAllChatID(cb: (rows: ChatIDData[]) => any) {
+    const sql =
+      'SELECT ID as id, ChatID as chatID, Enabled as enabled FROM ChatID'
+
+    this.db.all(sql, (err: Error | null, rows: ChatIDData[]) => {
+      if (err) {
+        this.errorHandler(err.message)
+      } else {
+        cb(rows)
+      }
+    })
+  }
+
+  getAllEnabledChatID(cb: (rows: ChatIDData[]) => any) {
+    const sql =
+      'SELECT ID as id, ChatID as chatID, Enabled as enabled FROM ChatID WHERE Enabled=1'
+
+    this.db.all(sql, (err: Error | null, rows: ChatIDData[]) => {
+      if (err) {
+        this.errorHandler(err.message)
+      } else {
+        cb(rows)
+      }
+    })
   }
 
   dropTable(tableName: string) {
