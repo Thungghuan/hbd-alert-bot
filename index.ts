@@ -2,7 +2,7 @@ import { Telegraf, Scenes, session } from 'telegraf'
 import { DB } from './database'
 import { agent } from './utils/socksProxy'
 import { serverStart } from './utils/server'
-import { addDataWizard } from './scenes/addDataWizard'
+import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
 const token = process.env.BOT_TOKEN!
 
@@ -20,7 +20,10 @@ if (process.env.BOT_ENV === 'development') {
 
 const bot = new Telegraf<Scenes.WizardContext>(token, botOptions)
 
-const stage = new Scenes.Stage<Scenes.WizardContext>([addDataWizard])
+const stage = new Scenes.Stage<Scenes.WizardContext>([
+  addDataWizard,
+  toggleChatEnableWizard
+])
 bot.use(session())
 bot.use(stage.middleware())
 
@@ -51,10 +54,50 @@ bot.start((ctx) => {
   ctx.reply(replyMSG)
 })
 
+bot.command('show_chat', (ctx) => {
+  const db = new DB(dbName)
+
+  db.getAllChatID((rows) => {
+    let replyMSG = 'ID ChatID  Enabled\n'
+
+    rows.forEach((row) => {
+      replyMSG += `${row.id} ${row.chatID} ${row.enabled === 1 ? '✅' : '❌'}\n`
+    })
+
+    ctx.reply(replyMSG)
+  })
+})
+
+bot.command('toggle_chat_enable', (ctx) => {
+  ctx.scene.enter('toggle_chat_enable')
+})
+
+bot.command('all_enabled_chat', (ctx) => {
+  const db = new DB(dbName)
+
+  db.getAllEnabledChatID((rows) => {
+    if (rows.length === 0) {
+      ctx.reply(
+        'No chat is enabled\nUse command /toggle_chat_enable to enable one.'
+      )
+    } else {
+      let replyMSG = 'ID ChatID  Enabled\n'
+
+      rows.forEach((row) => {
+        replyMSG += `${row.id} ${row.chatID} ${
+          row.enabled === 1 ? '✅' : '❌'
+        }\n`
+      })
+
+      ctx.reply(replyMSG)
+    }
+  })
+})
+
 bot.help((ctx) => {})
 
 bot.command('add_data', (ctx) => {
-  ctx.scene.enter('add_data_wizard')
+  ctx.scene.enter('add_data')
 })
 
 bot.command('hello', (ctx) => {

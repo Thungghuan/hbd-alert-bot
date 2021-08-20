@@ -6,7 +6,7 @@ interface BirthdayData {
 }
 
 export const addDataWizard = new Scenes.WizardScene(
-  'add_data_wizard',
+  'add_data',
   async (ctx: any) => {
     const replyMSG =
       '🥳 Send the birthday day list please.\n' +

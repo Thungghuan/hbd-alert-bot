@@ -259,7 +259,7 @@ export class DB {
     })
   }
 
-  toggleChanIDAlert(id: number) {
+  toggleChanIDAlert(id: number, cb: (...args: any) => any) {
     if (id <= 0) {
       this.errorHandler(`ID ${id} is invalid`)
     } else {
@@ -277,6 +277,7 @@ export class DB {
               this.errorHandler(err.message)
             } else {
               this.successHandler('Chat alert toggled')
+              cb()
             }
           })
         }
