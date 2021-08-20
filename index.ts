@@ -1,7 +1,6 @@
 import { Telegraf, Scenes, session } from 'telegraf'
 import { DB } from './database'
-import { agent } from './utils/socksProxy'
-import { serverStart } from './utils/server'
+import { agent, serverStart } from './utils'
 import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
 const token = process.env.BOT_TOKEN!
