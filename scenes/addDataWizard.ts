@@ -34,7 +34,7 @@ export const addDataWizard = new Scenes.WizardScene(
       birthdayData.push(data)
     })
 
-    const db = new DB('data.db')
+    const db = new DB()
     const tableName = `Chat_${ctx.chat.id}`
 
     db.insertItemsIfNotExist(tableName, birthdayData)

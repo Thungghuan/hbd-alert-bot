@@ -26,8 +26,6 @@ const stage = new Scenes.Stage<Scenes.WizardContext>([
 bot.use(session())
 bot.use(stage.middleware())
 
-const dbName = 'data.db'
-
 bot.start((ctx) => {
   let replyMSG =
     "Hello, I'm HBD-alert-bot \n" +
@@ -42,7 +40,7 @@ bot.start((ctx) => {
     replyMSG += 'Hello everyone.'
   }
 
-  const db = new DB(dbName)
+  const db = new DB()
   const tableName = `Chat_${ctx.chat.id}`
 
   db.createDateTable(tableName)
@@ -54,7 +52,7 @@ bot.start((ctx) => {
 })
 
 bot.command('show_chat', (ctx) => {
-  const db = new DB(dbName)
+  const db = new DB()
 
   db.getAllChatID((rows) => {
     let replyMSG = 'ID ChatID  Enabled\n'
@@ -72,7 +70,7 @@ bot.command('toggle_chat_enable', (ctx) => {
 })
 
 bot.command('all_enabled_chat', (ctx) => {
-  const db = new DB(dbName)
+  const db = new DB()
 
   db.getAllEnabledChatID((rows) => {
     if (rows.length === 0) {
@@ -100,7 +98,7 @@ bot.command('add_data', (ctx) => {
 })
 
 bot.command('show_data', (ctx) => {
-  const db = new DB(dbName)
+  const db = new DB()
   const tableName = `Chat_${ctx.chat.id}`
 
   db.getAllBirthdayData(tableName, (rows) => {

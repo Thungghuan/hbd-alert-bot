@@ -24,7 +24,8 @@ export class DB {
   successHandler: (...args: any) => any
   errorHandler: (err: string) => any
 
-  constructor(dbName: string, handlers?: DBHandlers) {
+  constructor(handlers?: DBHandlers) {
+    const dbName = 'data.db'
     this.dbName = dbName
     this.successHandler =
       handlers?.successHandler || ((res) => console.log(res))

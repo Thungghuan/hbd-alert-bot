@@ -4,7 +4,7 @@ import { DB } from '../database'
 export const toggleChatEnableWizard = new Scenes.WizardScene(
   'toggle_chat_enable',
   (ctx: any) => {
-    const db = new DB('data.db')
+    const db = new DB()
 
     db.getAllChatID((rows) => {
       let replyMSG = 'The chat list: \n'
@@ -23,10 +23,10 @@ export const toggleChatEnableWizard = new Scenes.WizardScene(
     })
     return ctx.wizard.next()
   },
-  async (ctx) => {
-    const db = new DB('data.db')
+  (ctx) => {
+    const db = new DB()
     const id = +ctx.message.text
-    await db.toggleChanIDAlert(id, () => {
+    db.toggleChanIDAlert(id, () => {
       db.getAllChatID((rows) => {
         let replyMSG = 'Now the chat list: \n'
 
