@@ -1,6 +1,9 @@
 import { SocksProxyAgent } from 'socks-proxy-agent'
+import config from '../config'
+
+const { host, port } = config.socksProxy
 
 export const agent = new SocksProxyAgent({
-  host: '127.0.0.1',
-  port: '1086'
+  host,
+  port
 })
