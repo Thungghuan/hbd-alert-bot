@@ -1,12 +1,13 @@
 import { Telegraf, Scenes, session } from 'telegraf'
-import { agent, serverStart } from './utils'
+import { agent, serverStart, alertSchedule } from './utils'
 import {
   start,
   showAllChat,
   toggleChatEnable,
   showEnabledChat,
   addData,
-  showData
+  showData,
+  alert
 } from './controllers'
 import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
@@ -46,6 +47,8 @@ bot.help((ctx) => {})
 bot.command('add_data', addData)
 
 bot.command('show_data', showData)
+
+alertSchedule(() => alert(bot))
 
 bot.launch()
 

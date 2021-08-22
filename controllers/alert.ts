@@ -1,11 +1,13 @@
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import { Telegraf } from 'telegraf'
 import { DB, BirthdayData } from '../database'
+import config from '../config'
 
 dayjs.extend(isBetween)
 
 // timezone offset in China
-const currentTimezoneOffset = +8
+const { currentTimezoneOffset } = config
 const timezoneOffset =
   currentTimezoneOffset + new Date().getTimezoneOffset() / 60
 
@@ -34,7 +36,7 @@ const birthdayFilter = (end: number = 0, start: number = 0) => {
   return filter
 }
 
-export const alert = () => {
+export const alert = (bot: Telegraf<any>) => {
   const db = new DB()
 
   const allBirthdayData: BirthdayData[] = []
@@ -56,16 +58,35 @@ export const alert = () => {
         alertMSG +=
           '🎉 今天生日的有：\n' +
           `${birthdayToday.map((people) => people.name).join(', ')}\n` +
-          `快去给ta${birthdayToday.length > 1 ? '们' : ''}发祝福吧\n`
+          `快去给ta${birthdayToday.length > 1 ? '们' : ''}发祝福吧\n\n`
       }
 
-      console.log(alertMSG)
-      console.log(birthdayIn3days)
-      console.log(birthdayIn7days)
+      if (birthdayIn3days.length > 0) {
+        alertMSG += '🎉 三天内生日的有：\n'
+
+        birthdayIn3days.forEach((data) => {
+          alertMSG += `${data.name}  ${data.date}\n`
+        })
+
+        alertMSG += `记得给ta${
+          birthdayIn3days.length > 1 ? '们' : ''
+        }发祝福哦\n\n`
+      }
+
+      if (birthdayIn3days.length > 0) {
+        alertMSG += '🎉 七天内生日的有：\n'
+
+        birthdayIn7days.forEach((data) => {
+          alertMSG += `${data.name}  ${data.date}\n`
+        })
+
+        alertMSG += '到时候别忘了哦\n\n'
+      }
+
+      // console.log(alertMSG)
+      bot.telegram.sendMessage(chat.chatID, alertMSG)
     })
   )
 
   db.close()
 }
-
-alert()
