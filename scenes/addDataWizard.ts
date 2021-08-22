@@ -20,8 +20,8 @@ export const addDataWizard = new Scenes.WizardScene(
     const textSplit: string[] = ctx.message.text.split(
       /:|：|\s+|\n|\s*周[日一二三四五六]/
     )
-    const names = textSplit.filter((el, i) => el && i % 2 === 0)
-    const dates = textSplit.filter((el, i) => el && i % 2 === 1)
+    const names = textSplit.filter((el) => el).filter((el, i) => i % 2 === 0)
+    const dates = textSplit.filter((el) => el).filter((el, i) => i % 2 === 1)
 
     const birthdayData: BirthdayData[] = []
     names.forEach((name, i) => {
