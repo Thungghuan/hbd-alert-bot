@@ -48,6 +48,8 @@ bot.command('add_data', addData)
 
 bot.command('show_data', showData)
 
+bot.command('alert', () => alert(bot))
+
 alertSchedule(() => alert(bot))
 
 bot.launch()

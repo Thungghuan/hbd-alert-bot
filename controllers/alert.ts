@@ -73,7 +73,7 @@ export const alert = (bot: Telegraf<any>) => {
         }发祝福哦\n\n`
       }
 
-      if (birthdayIn3days.length > 0) {
+      if (birthdayIn7days.length > 0) {
         alertMSG += '🎉 七天内生日的有：\n'
 
         birthdayIn7days.forEach((data) => {
@@ -84,6 +84,7 @@ export const alert = (bot: Telegraf<any>) => {
       }
 
       // console.log(alertMSG)
+      console.log(birthdayIn7days)
       bot.telegram.sendMessage(chat.chatID, alertMSG)
     })
   )
