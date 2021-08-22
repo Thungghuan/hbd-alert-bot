@@ -1,54 +1,8 @@
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import { DB, BirthdayData } from '../database'
 
 dayjs.extend(isBetween)
-
-const testData = [
-  {
-    name: 'Z',
-    date: '08.21'
-  },
-  {
-    name: 'A',
-    date: '08.22'
-  },
-  {
-    name: 'B',
-    date: '08.23'
-  },
-  {
-    name: 'C',
-    date: '08.24'
-  },
-  {
-    name: 'D',
-    date: '08.25'
-  },
-  {
-    name: 'E',
-    date: '08.26'
-  },
-  {
-    name: 'F',
-    date: '08.27'
-  },
-  {
-    name: 'G',
-    date: '08.28'
-  },
-  {
-    name: 'H',
-    date: '08.29'
-  },
-  {
-    name: 'I',
-    date: '08.30'
-  },
-  {
-    name: 'J',
-    date: '08.31'
-  }
-]
 
 // timezone offset in China
 const currentTimezoneOffset = +8
@@ -80,10 +34,38 @@ const birthdayFilter = (end: number = 0, start: number = 0) => {
   return filter
 }
 
-const birthdayToday = testData.filter(birthdayFilter())
-const birthdayIn3days = testData.filter(birthdayFilter(3))
-const birthdayIn7days = testData.filter(birthdayFilter(7, 3))
+export const alert = () => {
+  const db = new DB()
 
-console.log(birthdayToday)
-console.log(birthdayIn3days)
-console.log(birthdayIn7days)
+  const allBirthdayData: BirthdayData[] = []
+  db.getAllEnabledChatID((chats) =>
+    chats.forEach(async (chat) => {
+      await db.getAllBirthdayData(`Chat_${chat.chatID}`, (allData) => {
+        allData.forEach((data) => {
+          allBirthdayData.push(data)
+        })
+      })
+
+      let alertMSG = ''
+
+      const birthdayToday = allBirthdayData.filter(birthdayFilter())
+      const birthdayIn3days = allBirthdayData.filter(birthdayFilter(3))
+      const birthdayIn7days = allBirthdayData.filter(birthdayFilter(7, 3))
+
+      if (birthdayToday.length > 0) {
+        alertMSG +=
+          '🎉 今天生日的有：\n' +
+          `${birthdayToday.map((people) => people.name).join(', ')}\n` +
+          `快去给ta${birthdayToday.length > 1 ? '们' : ''}发祝福吧\n`
+      }
+
+      console.log(alertMSG)
+      console.log(birthdayIn3days)
+      console.log(birthdayIn7days)
+    })
+  )
+
+  db.close()
+}
+
+alert()

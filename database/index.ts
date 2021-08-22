@@ -6,13 +6,13 @@ interface DBHandlers {
   errorHandler?: (err: string) => any
 }
 
-interface BirthdayData {
+export interface BirthdayData {
   id?: number
   name: string
   date: string
 }
 
-interface ChatIDData {
+export interface ChatIDData {
   id?: number
   chatID: string
   enabled: number
@@ -152,12 +152,15 @@ export class DB {
   getAllBirthdayData(tableName: string, cb: (data: BirthdayData[]) => any) {
     const sql = `SELECT ID as id, Name as name, Date as date FROM ${tableName}`
 
-    this.db.all(sql, (err: Error | null, rows: BirthdayData[]) => {
-      if (err) {
-        this.errorHandler(err.message)
-      } else {
-        cb(rows)
-      }
+    return new Promise<void>((resolve) => {
+      this.db.all(sql, (err: Error | null, rows: BirthdayData[]) => {
+        if (err) {
+          this.errorHandler(err.message)
+        } else {
+          cb(rows)
+        }
+        resolve()
+      })
     })
   }
 
@@ -303,12 +306,15 @@ export class DB {
     const sql =
       'SELECT ID as id, ChatID as chatID, Enabled as enabled FROM ChatID WHERE Enabled=1'
 
-    this.db.all(sql, (err: Error | null, rows: ChatIDData[]) => {
-      if (err) {
-        this.errorHandler(err.message)
-      } else {
-        cb(rows)
-      }
+    return new Promise<void>((resolve) => {
+      this.db.all(sql, (err: Error | null, rows: ChatIDData[]) => {
+        if (err) {
+          this.errorHandler(err.message)
+        } else {
+          cb(rows)
+        }
+        resolve()
+      })
     })
   }
 
