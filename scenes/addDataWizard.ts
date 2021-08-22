@@ -12,15 +12,13 @@ export const addDataWizard = new Scenes.WizardScene(
     const replyMSG =
       '🥳 Send the birthday day list please\\.\n' +
       '📝 Format: NAME MM\\.DD\n' +
-      '_Separated by Pattern: _\n' +
-      '`/:|：|s+|\\n|s*周[日一二三四五六]/`\n' +
-      '_人话: colon, space, newline, 周x_ \n'
+      '_Separated by colon, space, newline _\n'
     ctx.replyWithMarkdownV2(replyMSG)
     return ctx.wizard.next()
   },
   async (ctx) => {
     const textSplit: string[] = ctx.message.text.split(
-      /:|：|s+|\n|s*周[日一二三四五六]/
+      /:|：|\s+|\n|\s*周[日一二三四五六]/
     )
     const names = textSplit.filter((el, i) => el && i % 2 === 0)
     const dates = textSplit.filter((el, i) => el && i % 2 === 1)
