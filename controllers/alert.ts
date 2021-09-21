@@ -16,7 +16,7 @@ const birthdayFilter = (end: number = 0, start: number = 0) => {
 
   const filter = (el: { name: string; date: string }) => {
     if (end === 0) {
-      return today.format('MM.DD') === el.date
+      return today.format('MM.DD') === el.date || today.format('MM-DD') === el.date
     } else {
       const isBirthdayNotPast = today.isBefore(
         dayjs(el.date).year(today.year()),
@@ -83,8 +83,11 @@ export const alert = (bot: Telegraf<any>) => {
         alertMSG += '到时候别忘了哦\n\n'
       }
 
-      // console.log(alertMSG)
-      console.log(birthdayIn7days)
+      if (!alertMSG) {
+        alertMSG = '最近没有生日的人:)'
+      }
+
+      // console.log(birthdayToday)
       bot.telegram.sendMessage(chat.chatID, alertMSG)
     })
   )
