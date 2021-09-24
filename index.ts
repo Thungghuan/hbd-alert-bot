@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { Telegraf, Scenes, session } from 'telegraf'
 import { agent, serverStart, alertSchedule } from './utils'
 import {
