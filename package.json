@@ -22,7 +22,7 @@
     "@types/node": "^16.4.2",
     "@types/node-cron": "^2.0.4",
     "dayjs": "^1.10.6",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.3.0",
     "node-cron": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "socks-proxy-agent": "^6.0.0",
