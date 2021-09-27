@@ -1,42 +1,42 @@
 import { Context, Scenes } from 'telegraf'
-import { DB } from '../database'
+import { getAllChats } from '../models'
 
-export const showAllChat = (ctx: Context) => {
-  const db = new DB()
+export const showAllChat = async (ctx: Context) => {
+  const allChats = await getAllChats()
 
-  db.getAllChatID((rows) => {
-    let replyMSG = 'ID ChatID  Enabled\n'
+  let replyMSG = '| ID |  ChatID  | Enabled |\n'
 
-    rows.forEach((row) => {
-      replyMSG += `${row.id} ${row.chatID} ${row.enabled === 1 ? '✅' : '❌'}\n`
-    })
-
-    ctx.reply(replyMSG)
+  allChats.forEach((chat) => {
+    replyMSG += `| ${chat.id} | ${chat.chatID} | ${
+      chat.enabled ? '√' : 'x'
+    } |\n`
   })
+
+  ctx.reply(replyMSG)
 }
 
 export const toggleChatEnable = (ctx: Scenes.WizardContext) => {
   ctx.scene.enter('toggle_chat_enable')
 }
 
-export const showEnabledChat = (ctx: Context) => {
-  const db = new DB()
+// export const showEnabledChat = (ctx: Context) => {
+//   const db = new DB()
 
-  db.getAllEnabledChatID((rows) => {
-    if (rows.length === 0) {
-      ctx.reply(
-        'No chat is enabled\nUse command /toggle_chat_enable to enable one.'
-      )
-    } else {
-      let replyMSG = 'ID ChatID  Enabled\n'
+//   db.getAllEnabledChatID((rows) => {
+//     if (rows.length === 0) {
+//       ctx.reply(
+//         'No chat is enabled\nUse command /toggle_chat_enable to enable one.'
+//       )
+//     } else {
+//       let replyMSG = 'ID ChatID  Enabled\n'
 
-      rows.forEach((row) => {
-        replyMSG += `${row.id} ${row.chatID} ${
-          row.enabled === 1 ? '✅' : '❌'
-        }\n`
-      })
+//       rows.forEach((row) => {
+//         replyMSG += `${row.id} ${row.chatID} ${
+//           row.enabled === 1 ? '✅' : '❌'
+//         }\n`
+//       })
 
-      ctx.reply(replyMSG)
-    }
-  })
-}
+//       ctx.reply(replyMSG)
+//     }
+//   })
+// }

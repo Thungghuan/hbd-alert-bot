@@ -2,16 +2,10 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import { Telegraf, Scenes, session } from 'telegraf'
 import { agent, alertSchedule } from './utils'
-import { start } from './controllers/start'
-// import {
-//   start,
-//   showAllChat,
-//   toggleChatEnable,
-//   showEnabledChat,
-//   addData,
-//   showData,
-//   alert
-// } from './controllers'
+import {
+  start,
+  showAllChat
+} from './controllers'
 // import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
 const token = process.env.BOT_TOKEN!
@@ -37,13 +31,9 @@ createConnection()
     bot.use(session())
     // bot.use(stage.middleware())
 
-    bot.command('test', (ctx) => {
-      ctx.reply('Hello')
-    })
-
     bot.start(start)
 
-    // bot.command('show_chat', showAllChat)
+    bot.command('show_chat', showAllChat)
 
     // bot.command('toggle_chat_enable', toggleChatEnable)
 

@@ -37,3 +37,25 @@ export const createChat = async (chatID: string) => {
     await chatRepository.save(chatObject)
   }
 }
+
+export const getAllChats = async () => {
+  const chatRepository = getRepository(Chat)
+  return await chatRepository.find()
+}
+
+export const getAllEnabledChats = async () => {
+  const chatRepository = getRepository(Chat)
+  return await chatRepository.find({ enabled: true })
+}
+
+export const toggleChatEnabled = async (chatID: string) => {
+  const chatRepository = getRepository(Chat)
+  const chat = await chatRepository.findOne({ chatID })
+
+  if (chat) {
+    chat.enabled = !chat.enabled
+    return chat.enabled
+  } else {
+    return null
+  }
+}
