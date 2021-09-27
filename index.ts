@@ -17,8 +17,6 @@ const token = process.env.BOT_TOKEN!
 
 createConnection()
   .then((conn) => {
-    console.log(conn)
-
     const botOptions: Partial<
       Telegraf.Options<Scenes.WizardContext<Scenes.WizardSessionData>>
     > = {}
