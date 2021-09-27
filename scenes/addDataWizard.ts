@@ -1,10 +1,6 @@
 import { Scenes } from 'telegraf'
-import { DB } from '../database'
-
-interface BirthdayData {
-  name: string
-  date: string
-}
+import { addBirthday } from '../models'
+import { BirthdayData } from '../types'
 
 export const addDataWizard = new Scenes.WizardScene(
   'add_data',
@@ -25,20 +21,26 @@ export const addDataWizard = new Scenes.WizardScene(
 
     const birthdayData: BirthdayData[] = []
     names.forEach((name, i) => {
+      let month = dates[i].split(/-|\./)[0]
+      let date = dates[i].split(/-|\./)[1]
+
+      if (month.length < 2) {
+        month = '0' + month
+      }
+      if (date.length < 2) {
+        console.log(date)
+        date = '0' + date
+      }
+
       const data: BirthdayData = {
         name,
-        date: dates[i]
+        date: month + '-' + date
       }
       birthdayData.push(data)
     })
 
-    const db = new DB()
-    const tableName = `Chat_${ctx.chat.id}`
-
-    db.insertItemsIfNotExist(tableName, birthdayData)
-
-    await ctx.reply('All items were inserted.')
-    db.close()
+    await addBirthday(ctx.chat.id, birthdayData)
+    ctx.reply('All items were inserted.')
     return ctx.scene.leave()
   }
 )

@@ -4,9 +4,11 @@ import { Telegraf, Scenes, session } from 'telegraf'
 import { agent, alertSchedule } from './utils'
 import {
   start,
-  showAllChat
+  showAllChat,
+  addData,
+  showData
 } from './controllers'
-// import { addDataWizard, toggleChatEnableWizard } from './scenes'
+import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
 const token = process.env.BOT_TOKEN!
 
@@ -24,12 +26,12 @@ createConnection()
 
     const bot = new Telegraf<Scenes.WizardContext>(token, botOptions)
 
-    // const stage = new Scenes.Stage<Scenes.WizardContext>([
-    //   addDataWizard,
-    //   toggleChatEnableWizard
-    // ])
+    const stage = new Scenes.Stage<Scenes.WizardContext>([
+      addDataWizard,
+      toggleChatEnableWizard
+    ])
     bot.use(session())
-    // bot.use(stage.middleware())
+    bot.use(stage.middleware())
 
     bot.start(start)
 
@@ -41,9 +43,9 @@ createConnection()
 
     // bot.help((ctx) => {})
 
-    // bot.command('add_data', addData)
+    bot.command('add_data', addData)
 
-    // bot.command('show_data', showData)
+    bot.command('show_data', showData)
 
     // bot.command('alert', () => alert(bot))
 
