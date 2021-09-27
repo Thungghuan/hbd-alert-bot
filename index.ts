@@ -6,9 +6,10 @@ import {
   start,
   showAllChat,
   addData,
-  showData
+  showData,
+  addDataWizard,
+  toggleChatEnableWizard
 } from './controllers'
-import { addDataWizard, toggleChatEnableWizard } from './scenes'
 
 const token = process.env.BOT_TOKEN!
 

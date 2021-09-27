@@ -1,6 +1,6 @@
 import { Scenes } from 'telegraf'
-import { addBirthday } from '../models'
-import { BirthdayData } from '../types'
+import { addBirthday } from '../../models'
+import { BirthdayData } from '../../types'
 
 export const addDataWizard = new Scenes.WizardScene(
   'add_data',
