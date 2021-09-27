@@ -1,7 +1,7 @@
 import { Context } from 'telegraf'
-import { DB } from '../database'
+import { createChat } from '../models'
 
-export const start = (ctx: Context) => {
+export const start = async (ctx: Context) => {
   const chat = ctx.chat!
 
   let replyMSG =
@@ -17,13 +17,7 @@ export const start = (ctx: Context) => {
     replyMSG += 'Hello everyone.'
   }
 
-  const db = new DB()
-  const tableName = `Chat_${chat.id}`
-
-  db.createDateTable(tableName)
-  db.createChatTable(tableName, '' + chat.id)
-
-  db.close()
+  await createChat('' + chat.id)
 
   ctx.reply(replyMSG)
 }

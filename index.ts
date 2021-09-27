@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import { Telegraf, Scenes, session } from 'telegraf'
 import { agent, alertSchedule } from './utils'
+import { start } from './controllers/start'
 // import {
 //   start,
 //   showAllChat,
@@ -40,7 +41,7 @@ createConnection()
       ctx.reply('Hello')
     })
 
-    // bot.start(start)
+    bot.start(start)
 
     // bot.command('show_chat', showAllChat)
 

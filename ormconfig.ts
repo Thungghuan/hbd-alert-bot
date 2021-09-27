@@ -1,3 +1,4 @@
+import { ConnectionOptions } from 'typeorm'
 import { Chat, Birthday } from './models'
 
 export default {
@@ -7,5 +8,6 @@ export default {
   username: 'root',
   password: '',
   database: 'hbd_bot',
-  entities: [Chat, Birthday]
-}
+  entities: [Chat, Birthday],
+  synchronize: true
+} as ConnectionOptions
