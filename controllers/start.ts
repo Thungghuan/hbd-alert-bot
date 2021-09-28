@@ -22,7 +22,7 @@ export const start = async (ctx: Context) => {
 
   if (!(await getChatStatus(chatID))) {
     replyMSG +=
-      'Alert in this chat room is not enabled.\n' +
+      'Alert schedule in this chat room is not enabled.\n' +
       'You can send me /toggle_chat_enable to enable.'
   }
 
