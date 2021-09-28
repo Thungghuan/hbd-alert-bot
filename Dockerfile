@@ -1,15 +1,8 @@
-FROM node:16
-
-WORKDIR /usr/src/app
-
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-
-RUN npm install && mv node_modules ../
-
+FROM node:14-alpine
+WORKDIR /app
+COPY ["package.json", "package-lock.json*", "./"]
+RUN npm install --production --silent
 COPY . .
-
-RUN chown -R node /usr/src/app
-
+RUN chown -R node /app
 USER node
-
 CMD ["npm", "start"]
