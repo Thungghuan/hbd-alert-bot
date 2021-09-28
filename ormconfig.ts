@@ -1,12 +1,10 @@
 import { ConnectionOptions } from 'typeorm'
 import { Chat, Birthday } from './models'
+import config from './config'
 
 export default {
   type: 'mysql',
-  host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: '',
+  ...config.mysql,
   database: 'hbd_bot',
   entities: [Chat, Birthday],
   synchronize: true
