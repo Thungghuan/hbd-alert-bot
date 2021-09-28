@@ -1,5 +1,9 @@
 import { Context, Scenes } from 'telegraf'
-import { getAllChats } from '../models'
+import {
+  getAllChats,
+  toggleChatEnabledByChatID,
+  getChatStatus
+} from '../models'
 
 export const showAllChat = async (ctx: Context) => {
   const allChats = await getAllChats()
@@ -15,8 +19,19 @@ export const showAllChat = async (ctx: Context) => {
   ctx.reply(replyMSG)
 }
 
-export const toggleChatEnable = (ctx: Scenes.WizardContext) => {
-  ctx.scene.enter('toggle_chat_enable')
+export const toggleChatEnabled = async (ctx: Context) => {
+  const chatID = '' + ctx.chat!.id
+  await toggleChatEnabledByChatID(chatID)
+
+  ctx.reply(
+    `OK, now alert in this chat room is ${
+      (await getChatStatus(chatID)) ? 'enabled' : 'disabled'
+    }`
+  )
+}
+
+export const controlAllChats = (ctx: Scenes.WizardContext) => {
+  ctx.scene.enter('toggle_chat_enable_wizard')
 }
 
 // export const showEnabledChat = (ctx: Context) => {

@@ -5,6 +5,7 @@ import { agent, alertSchedule } from './utils'
 import {
   start,
   showAllChat,
+  toggleChatEnabled,
   addData,
   showData,
   addDataWizard,
@@ -38,7 +39,7 @@ createConnection()
 
     bot.command('show_chat', showAllChat)
 
-    // bot.command('toggle_chat_enable', toggleChatEnable)
+    bot.command('toggle_chat_enable', toggleChatEnabled)
 
     // bot.command('show_enabled_chat', showEnabledChat)
 

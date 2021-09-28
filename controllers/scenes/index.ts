@@ -1,2 +1,2 @@
 export * from './addDataWizard'
-export * from './toggleChatEnable'
+export * from './toggleChatEnableWizard'
