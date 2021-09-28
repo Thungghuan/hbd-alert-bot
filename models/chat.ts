@@ -48,6 +48,10 @@ export const getAllEnabledChats = async () => {
   return await chatRepository.find({ enabled: true })
 }
 
+export const getChatByChatID = async (chatID: string) => {
+  return await getRepository(Chat).findOne({ chatID }) || null
+}
+
 export const getChatStatus = async (chatID: string) => {
   const chatRepository = getRepository(Chat)
   return (await chatRepository.findOne({ chatID }))?.enabled
