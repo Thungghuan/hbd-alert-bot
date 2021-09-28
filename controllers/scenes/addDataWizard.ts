@@ -1,6 +1,5 @@
 import { Scenes } from 'telegraf'
-import { addBirthday } from '../../models'
-import { BirthdayData } from '../../types'
+import { Birthday, addBirthday } from '../../models'
 
 export const addDataWizard = new Scenes.WizardScene(
   'add_data',
@@ -19,7 +18,7 @@ export const addDataWizard = new Scenes.WizardScene(
     const names = textSplit.filter((el) => el).filter((el, i) => i % 2 === 0)
     const dates = textSplit.filter((el) => el).filter((el, i) => i % 2 === 1)
 
-    const birthdayData: BirthdayData[] = []
+    const birthdayData: Pick<Birthday, 'name' | 'date'>[] = []
     names.forEach((name, i) => {
       let month = dates[i].split(/-|\./)[0]
       let date = dates[i].split(/-|\./)[1]
@@ -32,7 +31,7 @@ export const addDataWizard = new Scenes.WizardScene(
         date = '0' + date
       }
 
-      const data: BirthdayData = {
+      const data: Pick<Birthday, 'name' | 'date'> = {
         name,
         date: month + '-' + date
       }

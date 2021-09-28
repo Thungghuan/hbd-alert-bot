@@ -6,7 +6,6 @@ import {
   getRepository
 } from 'typeorm'
 import { Chat } from './chat'
-import { BirthdayData } from '../types'
 
 @Entity()
 export class Birthday {
@@ -25,7 +24,7 @@ export class Birthday {
 
 export const addBirthday = async (
   chatID: string,
-  birthdayData: BirthdayData[]
+  birthdayData: Pick<Birthday, 'name' | 'date'>[]
 ) => {
   const chatRepository = getRepository(Chat)
   const birthdayRepository = getRepository(Birthday)
