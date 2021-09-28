@@ -111,3 +111,6 @@ index.js
 
 # Test file
 *.test.ts
+
+# Config file
+config/index.ts

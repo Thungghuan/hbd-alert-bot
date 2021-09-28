@@ -14,8 +14,9 @@ import {
   toggleChatEnableWizard,
   sendAlert
 } from './controllers'
+import config from './config'
 
-const token = process.env.BOT_TOKEN!
+const token = config.BOT_TOKEN!
 
 createConnection()
   .then(() => {
@@ -23,10 +24,8 @@ createConnection()
       Telegraf.Options<Scenes.WizardContext<Scenes.WizardSessionData>>
     > = {}
 
-    if (process.env.BOT_ENV === 'development') {
-      botOptions.telegram = {
-        agent
-      }
+    botOptions.telegram = {
+      agent
     }
 
     const bot = new Telegraf<Scenes.WizardContext>(token, botOptions)
