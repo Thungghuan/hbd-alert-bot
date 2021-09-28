@@ -9,6 +9,7 @@ import {
   showData,
   alertInChat,
   showAllChat,
+  showEnabledChat,
   addDataWizard,
   toggleChatEnableWizard,
   sendAlert
@@ -40,6 +41,7 @@ createConnection()
     // command for all user
     bot.start(start)
     // bot.help((ctx) => {})
+
     bot.command('toggle_chat_enable', toggleChatEnabled)
     bot.command('add_data', addData)
     bot.command('show_data', showData)
@@ -48,7 +50,7 @@ createConnection()
     // =================
     // command for admin
     bot.command('show_chat', showAllChat)
-    // bot.command('show_enabled_chat', showEnabledChat)
+    bot.command('show_enabled_chat', showEnabledChat)
 
     // =========
     // cron task
