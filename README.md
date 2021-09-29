@@ -1,14 +1,15 @@
 # hbd-alert-bot
-A telegram bot that alerts you whose birthday is coming. The bot is here [hbd_alert_bot](http://t.me/hbd_alert_bot), deployed on [Heroku](https://heroku.com/).
+A telegram bot that alerts you whose birthday is coming. The bot is here [hbd_alert_bot](http://t.me/hbd_alert_bot), ~~deployed on [Heroku](https://heroku.com/)~~, now I deployed it on my own RaspberryPi.
 
 
 
 ## Feature
 
 * Telegram bot using [telegraf](https://github.com/telegraf/telegraf), written in TypeScript.
+* Database support using MySQL with [Typeorm](https://github.com/typeorm/typeorm)
 * Alert periodically, using [node-cron](https://github.com/node-cron/node-cron), based on GNU crontab.
 * Date calculation using [day.js](https://day.js.org/).
-* Configable. Set the timezone, alert schedule and debug proxy freely.
+* Configurable. Set the timezone, alert schedule, mysql configuration and debug proxy freely.
 * Tell you whose birthday is already today, or in 3 days, or will be in this week.
 
 
@@ -26,33 +27,40 @@ A telegram bot that alerts you whose birthday is coming. The bot is here [hbd_al
    ```shell
    cd hbd-alert-bot
    npm i
+   cp config/index.example.ts config/index.ts
    vim config/index.ts
    ```
 
-3. Set environment variable `BOT_TOKEN`
+4. Remember to set your own token in the configure file
 
-   ```shell
-   export BOT_TOKEN=your_bot_token
+   ```ts
+   export default {
+      BOT_TOKEN: '<bot token here>'
+   }
    ```
 
-4. Run the script
+4. Run the bot
 
    ```shell
-   // development
-   npm run dev
-   
-   // production
    npm run start
    ```
 
+## Build the bot using Docker
+
+- Using docker-compose
+   ```shell
+   docker-compose up
+   ```
+
+- Or you can build the image and run
    
 
 ## TODO
 
-* Change database support from `SQLite` to other database due to Heroku [doesn't provide sqlite support](https://devcenter.heroku.com/articles/sqlite3).
 * Add validation when add birthday data.
 * Make the alert message more detailed, maybe some words like **tomorrow**, **Next Monday** etc.
-* Make birthday alert more configable.
+* Make birthday alert more configurable.
+* Make a tool to format the output message.
 
 
 
