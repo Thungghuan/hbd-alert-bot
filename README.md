@@ -31,7 +31,7 @@ A telegram bot that alerts you whose birthday is coming. The bot is here [hbd_al
    vim config/index.ts
    ```
 
-4. Remember to set your own token in the configure file
+3. Remember to set your own token in the configure file
 
    ```ts
    export default {
@@ -39,7 +39,9 @@ A telegram bot that alerts you whose birthday is coming. The bot is here [hbd_al
    }
    ```
 
-4. Run the bot
+4. BTW, notice that your schedule should be set refer to UTC time.
+
+5. Run the bot
 
    ```shell
    npm run start
